@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Media;
 
 namespace VacationHelper
 {
-    internal class VacationData : INotifyPropertyChanged
+    public class VacationData : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private string name1;
@@ -16,6 +17,9 @@ namespace VacationHelper
         private TimeSpan vacationSpan1;
         private TimeSpan vacationSpan2;
         private TimeSpan leaveSpan1;
+        private SolidColorBrush brush1;
+        private SolidColorBrush brush2;
+        private SolidColorBrush brush3;
 
         public VacationData()
         {
@@ -27,6 +31,9 @@ namespace VacationHelper
             this.vacationSpan1 = TimeSpan.FromDays(35);
             this.vacationSpan2 = TimeSpan.FromDays(20);
             this.leaveSpan1 = TimeSpan.FromDays(8 * 7);
+            this.brush1 = new SolidColorBrush(Colors.Red);
+            this.brush2 = new SolidColorBrush(Colors.Blue);
+            this.brush3 = new SolidColorBrush(Colors.Green);
         }
 
         public string Name1
@@ -82,6 +89,26 @@ namespace VacationHelper
             get { return string.Empty; }
         }
 
+        public SolidColorBrush GetBackgroundBrush(DateTime dt)
+        {
+            if (dt >= this.VacationStart1 && dt < this.VacationStart1 + this.VacationSpan1)
+            {
+                return this.brush1;
+            }
+
+            if (dt >= this.VacationStart2 && dt < this.VacationStart2 + this.VacationSpan2)
+            {
+                return this.brush2;
+            }
+
+            if (dt >= this.LeaveStart1 && dt < this.LeaveStart1 + this.LeaveSpan1)
+            {
+                return this.brush3;
+            }
+
+            return null;
+        }
+
         private void NotifyPropertyChanged(string name = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -93,6 +120,12 @@ namespace VacationHelper
             {
                 oldValue = newValue;
                 this.NotifyPropertyChanged(name);
+
+                if (name != null && (name.Contains("Start") || name.Contains("Span")))
+                {
+                    this.NotifyPropertyChanged("AnyDate");
+                }
+
                 return true;
             }
 

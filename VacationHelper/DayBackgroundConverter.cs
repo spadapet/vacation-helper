@@ -14,14 +14,20 @@ namespace VacationHelper
                 return null;
             }
 
-            if (values == null || values.Length < 1 || !(values[0] is DateTime))
+            if (values == null || values.Length < 2)
+            {
+                return null;
+            }
+
+            if (!(values[0] is DateTime) || !(values[1] is VacationData))
             {
                 return null;
             }
 
             DateTime dt = (DateTime)values[0];
+            VacationData data = (VacationData)values[1];
 
-            return null;
+            return data.GetBackgroundBrush(dt);
         }
 
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

@@ -78,7 +78,8 @@
                                 <Rectangle.Fill>
                                     <MultiBinding Converter="{StaticResource DayToBackground}">
                                         <Binding />
-                                        <Binding Source="{x:Static local:App.Current}" Path="VacationData.AnyDate" />
+                                        <Binding Source="{x:Static local:App.MyCurrent}" Path="VacationData" />
+                                        <Binding Source="{x:Static local:App.MyCurrent}" Path="VacationData.AnyDate" />
                                     </MultiBinding>
                                 </Rectangle.Fill>
                             </Rectangle>
@@ -230,7 +231,7 @@
                 <Calendar x:Name="Calendar1" Style="{StaticResource CalendarStyle}" DisplayDate="2016-10-01" DisplayDateStart="2016-10-01" DisplayDateEnd="2016-10-31" />
                 <Calendar x:Name="Calendar2" Style="{StaticResource CalendarStyle}" DisplayDate="2016-11-01" DisplayDateStart="2016-11-01" DisplayDateEnd="2016-11-30">
                     <Calendar.BlackoutDates>
-                        <CalendarDateRange End="2016-11-24" Start="2016-11-25"/>
+                        <CalendarDateRange End="2016-11-25" Start="2016-11-24"/>
                     </Calendar.BlackoutDates>
                 </Calendar>
                 <Calendar x:Name="Calendar3" Style="{StaticResource CalendarStyle}" DisplayDate="2016-12-01" DisplayDateStart="2016-12-01" DisplayDateEnd="2016-12-31" >

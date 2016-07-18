@@ -6,7 +6,7 @@ namespace VacationHelper
     {
         public MainWindow()
         {
-            this.DataContext = App.Current.VacationData;
+            this.DataContext = App.MyCurrent.VacationData;
             InitializeComponent();
         }
     }
