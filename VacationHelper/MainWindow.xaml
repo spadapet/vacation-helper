@@ -11,10 +11,91 @@
         d:DataContext="{d:DesignInstance {x:Type local:VacationData}, IsDesignTimeCreatable=True}">
     <Window.Resources>
         <local:TimeSpanToDaysConverter x:Key="TimeSpanToDays" />
+        <local:DayBackgroundConverter x:Key="DayToBackground" />
+        <Style x:Key="CalendarDayButtonStyle1" TargetType="{x:Type CalendarDayButton}">
+            <Setter Property="MinWidth" Value="5"/>
+            <Setter Property="MinHeight" Value="5"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CalendarDayButton}">
+                        <Grid>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver"/>
+                                    <VisualState x:Name="Pressed"/>
+                                    <VisualState x:Name="Disabled"/>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Unselected"/>
+                                    <VisualState x:Name="Selected"/>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="CalendarButtonFocusStates">
+                                    <VisualState x:Name="CalendarButtonFocused">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Visibility" Storyboard.TargetName="DayButtonFocusVisual">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Visible</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="CalendarButtonUnfocused">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Visibility" Storyboard.TargetName="DayButtonFocusVisual">
+                                                <DiscreteObjectKeyFrame KeyTime="0">
+                                                    <DiscreteObjectKeyFrame.Value>
+                                                        <Visibility>Collapsed</Visibility>
+                                                    </DiscreteObjectKeyFrame.Value>
+                                                </DiscreteObjectKeyFrame>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="ActiveStates">
+                                    <VisualState x:Name="Active"/>
+                                    <VisualState x:Name="Inactive"/>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="DayStates">
+                                    <VisualState x:Name="RegularDay"/>
+                                    <VisualState x:Name="Today"/>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="BlackoutDayStates">
+                                    <VisualState x:Name="NormalDay"/>
+                                    <VisualState x:Name="BlackoutDay">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="BlackoutVisual" Storyboard.TargetProperty="Opacity" To=".2" Duration="0" />
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Rectangle x:Name="FillVisual">
+                                <Rectangle.Fill>
+                                    <MultiBinding Converter="{StaticResource DayToBackground}">
+                                        <Binding />
+                                        <Binding Source="{x:Static local:App.Current}" Path="VacationData.AnyDate" />
+                                    </MultiBinding>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Rectangle x:Name="BlackoutVisual" Fill="Black" Opacity="0" />
+                            <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"/>
+                            <ContentPresenter x:Name="NormalText" TextElement.Foreground="#FF333333" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="5,1,5,1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            <Rectangle x:Name="DayButtonFocusVisual" IsHitTestVisible="false" Stroke="Black" Visibility="Collapsed"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style TargetType="Calendar" x:Key="CalendarStyle">
             <Setter Property="Margin" Value="5" />
             <Setter Property="IsTodayHighlighted" Value="False" />
             <Setter Property="SelectionMode" Value="None" />
+            <Setter Property="CalendarDayButtonStyle" Value="{StaticResource CalendarDayButtonStyle1}" />
         </Style>
         <Style TargetType="Grid" x:Key="RowGrid">
             <Setter Property="Margin" Value="5" />
@@ -146,12 +227,18 @@
         </StackPanel>
         <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <WrapPanel x:Name="CalendarPanel">
-                <WrapPanel.LayoutTransform>
-                    <ScaleTransform CenterX="0" CenterY="0" ScaleX="1.25" ScaleY="1.25" />
-                </WrapPanel.LayoutTransform>
                 <Calendar x:Name="Calendar1" Style="{StaticResource CalendarStyle}" DisplayDate="2016-10-01" DisplayDateStart="2016-10-01" DisplayDateEnd="2016-10-31" />
-                <Calendar x:Name="Calendar2" Style="{StaticResource CalendarStyle}" DisplayDate="2016-11-01" DisplayDateStart="2016-11-01" DisplayDateEnd="2016-11-30" />
-                <Calendar x:Name="Calendar3" Style="{StaticResource CalendarStyle}" DisplayDate="2016-12-01" DisplayDateStart="2016-12-01" DisplayDateEnd="2016-12-31" />
+                <Calendar x:Name="Calendar2" Style="{StaticResource CalendarStyle}" DisplayDate="2016-11-01" DisplayDateStart="2016-11-01" DisplayDateEnd="2016-11-30">
+                    <Calendar.BlackoutDates>
+                        <CalendarDateRange End="2016-11-24" Start="2016-11-25"/>
+                    </Calendar.BlackoutDates>
+                </Calendar>
+                <Calendar x:Name="Calendar3" Style="{StaticResource CalendarStyle}" DisplayDate="2016-12-01" DisplayDateStart="2016-12-01" DisplayDateEnd="2016-12-31" >
+                    <Calendar.BlackoutDates>
+                        <CalendarDateRange End="2016-12-23" Start="2016-12-23"/>
+                        <CalendarDateRange End="2016-12-26" Start="2016-12-26"/>
+                    </Calendar.BlackoutDates>
+                </Calendar>
                 <Calendar x:Name="Calendar4" Style="{StaticResource CalendarStyle}" DisplayDate="2017-01-01" DisplayDateStart="2017-01-01" DisplayDateEnd="2017-01-31" />
                 <Calendar x:Name="Calendar5" Style="{StaticResource CalendarStyle}" DisplayDate="2017-02-01" DisplayDateStart="2017-02-01" DisplayDateEnd="2017-02-28" />
                 <Calendar x:Name="Calendar6" Style="{StaticResource CalendarStyle}" DisplayDate="2017-03-01" DisplayDateStart="2017-03-01" DisplayDateEnd="2017-03-31" />

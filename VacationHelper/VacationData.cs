@@ -77,6 +77,11 @@ namespace VacationHelper
             set { this.UpdateValue(ref this.leaveSpan1, value); }
         }
 
+        public string AnyDate
+        {
+            get { return string.Empty; }
+        }
+
         private void NotifyPropertyChanged(string name = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

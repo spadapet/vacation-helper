@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DayBackgroundConverter.cs" />
     <Compile Include="TimeSpanToDaysConverter.cs" />
     <Compile Include="VacationData.cs" />
     <Page Include="MainWindow.xaml">
