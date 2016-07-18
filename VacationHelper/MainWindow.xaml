@@ -5,8 +5,157 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VacationHelper"
         mc:Ignorable="d"
-        Title="Vacation Helper" Height="350" Width="525">
+        Title="Vacation Helper"
+        Height="500"
+        Width="1000"
+        d:DataContext="{d:DesignInstance {x:Type local:VacationData}, IsDesignTimeCreatable=True}">
+    <Window.Resources>
+        <local:TimeSpanToDaysConverter x:Key="TimeSpanToDays" />
+        <Style TargetType="Calendar" x:Key="CalendarStyle">
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="IsTodayHighlighted" Value="False" />
+            <Setter Property="SelectionMode" Value="None" />
+        </Style>
+        <Style TargetType="Grid" x:Key="RowGrid">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+        <Style TargetType="DatePicker">
+            <Setter Property="IsTodayHighlighted" Value="False" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="TextBox" x:Key="TextBoxStyle">
+            <Setter Property="MinWidth" Value="75" />
+            <Setter Property="MaxLines" Value="1" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+        <Style TargetType="TextBlock" x:Key="LabelStyle">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </Window.Resources>
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.IsSharedSizeScope="True">
+            <Grid Style="{StaticResource RowGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Values"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="NameLabel1" Text="Name 1" Style="{StaticResource LabelStyle}"/>
+                <TextBox x:Name="Name1" Grid.Column="1" Style="{StaticResource TextBoxStyle}" Text="{Binding Name1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <Grid Style="{StaticResource RowGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Values"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="NameLabel2" Text="Name 2" Style="{StaticResource LabelStyle}"/>
+                <TextBox x:Name="Name2" Grid.Column="1" Style="{StaticResource TextBoxStyle}" Text="{Binding Name2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <Grid Style="{StaticResource RowGrid}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="12*"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Values"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="VacationStartLabel1" Style="{StaticResource LabelStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0}'s vacation start">
+                            <Binding Path="Name1" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <DatePicker x:Name="VacationStart1" Grid.Column="1" SelectedDate="{Binding VacationStart1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <Grid Style="{StaticResource RowGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Values"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="VacationLengthLabel1" Style="{StaticResource LabelStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0}'s vacation days">
+                            <Binding Path="Name1" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBox x:Name="VacationLength1" Grid.Column="1" Style="{StaticResource TextBoxStyle}" Text="{Binding VacationSpan1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TimeSpanToDays}, FallbackValue=0, TargetNullValue=0, ConverterParameter=1}"/>
+            </Grid>
+            <Grid Style="{StaticResource RowGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Values"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="VacationStartLabel2" Style="{StaticResource LabelStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0}'s vacation start">
+                            <Binding Path="Name2" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <DatePicker x:Name="VacationStart2" Grid.Column="1" SelectedDate="{Binding VacationStart2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <Grid Style="{StaticResource RowGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Values"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="VacationLengthLabel2" Style="{StaticResource LabelStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0}'s vacation days">
+                            <Binding Path="Name2" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBox x:Name="VacationLength2" Grid.Column="1" Style="{StaticResource TextBoxStyle}" Text="{Binding VacationSpan2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TimeSpanToDays}, FallbackValue=0, TargetNullValue=0, ConverterParameter=1}"/>
+            </Grid>
+            <Grid Style="{StaticResource RowGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Values"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="LeaveStartLabel1" Style="{StaticResource LabelStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0}'s leave start">
+                            <Binding Path="Name1" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <DatePicker x:Name="LeaveStart1" Grid.Column="1" SelectedDate="{Binding LeaveStart1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <Grid Style="{StaticResource RowGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Values"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="LeaveLengthLabel1" Style="{StaticResource LabelStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0}'s leave weeks">
+                            <Binding Path="Name1" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBox x:Name="LeaveLength1" Grid.Column="1" Style="{StaticResource TextBoxStyle}" Text="{Binding LeaveSpan1, Converter={StaticResource TimeSpanToDays}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0, TargetNullValue=0, ConverterParameter=7}"/>
+            </Grid>
+        </StackPanel>
+        <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <WrapPanel x:Name="CalendarPanel">
+                <WrapPanel.LayoutTransform>
+                    <ScaleTransform CenterX="0" CenterY="0" ScaleX="1.25" ScaleY="1.25" />
+                </WrapPanel.LayoutTransform>
+                <Calendar x:Name="Calendar1" Style="{StaticResource CalendarStyle}" DisplayDate="2016-10-01" DisplayDateStart="2016-10-01" DisplayDateEnd="2016-10-31" />
+                <Calendar x:Name="Calendar2" Style="{StaticResource CalendarStyle}" DisplayDate="2016-11-01" DisplayDateStart="2016-11-01" DisplayDateEnd="2016-11-30" />
+                <Calendar x:Name="Calendar3" Style="{StaticResource CalendarStyle}" DisplayDate="2016-12-01" DisplayDateStart="2016-12-01" DisplayDateEnd="2016-12-31" />
+                <Calendar x:Name="Calendar4" Style="{StaticResource CalendarStyle}" DisplayDate="2017-01-01" DisplayDateStart="2017-01-01" DisplayDateEnd="2017-01-31" />
+                <Calendar x:Name="Calendar5" Style="{StaticResource CalendarStyle}" DisplayDate="2017-02-01" DisplayDateStart="2017-02-01" DisplayDateEnd="2017-02-28" />
+                <Calendar x:Name="Calendar6" Style="{StaticResource CalendarStyle}" DisplayDate="2017-03-01" DisplayDateStart="2017-03-01" DisplayDateEnd="2017-03-31" />
+            </WrapPanel>
+        </ScrollViewer>
     </Grid>
 </Window>
