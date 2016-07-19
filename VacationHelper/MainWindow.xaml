@@ -240,7 +240,11 @@
                         <CalendarDateRange End="2016-12-26" Start="2016-12-26"/>
                     </Calendar.BlackoutDates>
                 </Calendar>
-                <Calendar x:Name="Calendar4" Style="{StaticResource CalendarStyle}" DisplayDate="2017-01-01" DisplayDateStart="2017-01-01" DisplayDateEnd="2017-01-31" />
+                <Calendar x:Name="Calendar4" Style="{StaticResource CalendarStyle}" DisplayDate="2017-01-01" DisplayDateStart="2017-01-01" DisplayDateEnd="2017-01-31">
+                    <Calendar.BlackoutDates>
+                        <CalendarDateRange End="2017-01-02" Start="2017-01-02"/>
+                    </Calendar.BlackoutDates>
+                </Calendar>
                 <Calendar x:Name="Calendar5" Style="{StaticResource CalendarStyle}" DisplayDate="2017-02-01" DisplayDateStart="2017-02-01" DisplayDateEnd="2017-02-28" />
                 <Calendar x:Name="Calendar6" Style="{StaticResource CalendarStyle}" DisplayDate="2017-03-01" DisplayDateStart="2017-03-01" DisplayDateEnd="2017-03-31" />
             </WrapPanel>

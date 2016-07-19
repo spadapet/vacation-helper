@@ -20,6 +20,7 @@ namespace VacationHelper
         private SolidColorBrush brush1;
         private SolidColorBrush brush2;
         private SolidColorBrush brush3;
+        private HashSet<DateTime> holidays;
 
         public VacationData()
         {
@@ -34,6 +35,14 @@ namespace VacationHelper
             this.brush1 = new SolidColorBrush(Colors.Red);
             this.brush2 = new SolidColorBrush(Colors.Blue);
             this.brush3 = new SolidColorBrush(Colors.Green);
+            this.holidays = new HashSet<DateTime>()
+            {
+                new DateTime(2016, 11, 24),
+                new DateTime(2016, 11, 25),
+                new DateTime(2016, 12, 23),
+                new DateTime(2016, 12, 26),
+                new DateTime(2017, 01, 02),
+            };
         }
 
         public string Name1
@@ -91,22 +100,49 @@ namespace VacationHelper
 
         public SolidColorBrush GetBackgroundBrush(DateTime dt)
         {
-            if (dt >= this.VacationStart1 && dt < this.VacationStart1 + this.VacationSpan1)
+            bool use = false;
+            Color color = Color.FromArgb(64, 0, 0, 0);
+
+            if (dt >= this.VacationStart1 && dt < this.VacationStart1 + this.AdjustVacationTimeSpan(this.VacationStart1, this.VacationSpan1))
             {
-                return this.brush1;
+                use = true;
+                color.R = 128;
             }
 
-            if (dt >= this.VacationStart2 && dt < this.VacationStart2 + this.VacationSpan2)
+            if (dt >= this.VacationStart2 && dt < this.VacationStart2 + this.AdjustVacationTimeSpan(this.VacationStart2, this.VacationSpan2))
             {
-                return this.brush2;
+                use = true;
+                color.G = 128;
             }
 
             if (dt >= this.LeaveStart1 && dt < this.LeaveStart1 + this.LeaveSpan1)
             {
-                return this.brush3;
+                use = true;
+                color.B = 128;
             }
 
-            return null;
+            return use ? new SolidColorBrush(color) : null;
+        }
+
+        private TimeSpan AdjustVacationTimeSpan(DateTime start, TimeSpan span)
+        {
+            DateTime end = this.SkipNonWorkDays(start);
+            for (double i = 0; i < span.TotalDays; i++)
+            {
+                end = this.SkipNonWorkDays(end.AddDays(1));
+            }
+
+            return end - start;
+        }
+
+        private DateTime SkipNonWorkDays(DateTime date)
+        {
+            while (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday || this.holidays.Contains(date))
+            {
+                date = date.AddDays(1);
+            }
+
+            return date;
         }
 
         private void NotifyPropertyChanged(string name = null)
