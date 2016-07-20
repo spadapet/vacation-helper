@@ -32,9 +32,9 @@ namespace VacationHelper
             this.vacationSpan1 = TimeSpan.FromDays(35);
             this.vacationSpan2 = TimeSpan.FromDays(20);
             this.leaveSpan1 = TimeSpan.FromDays(8 * 7);
-            this.brush1 = new SolidColorBrush(Colors.Red);
-            this.brush2 = new SolidColorBrush(Colors.Blue);
-            this.brush3 = new SolidColorBrush(Colors.Green);
+            this.brush1 = new SolidColorBrush(Color.FromArgb(96, 255, 0, 0));
+            this.brush2 = new SolidColorBrush(Color.FromArgb(96, 0, 255, 0));
+            this.brush3 = new SolidColorBrush(Color.FromArgb(96, 0, 0, 255));
             this.holidays = new HashSet<DateTime>()
             {
                 new DateTime(2016, 11, 24),
@@ -61,35 +61,23 @@ namespace VacationHelper
         public DateTime VacationStart1
         {
             get { return this.vacationStart1; }
-            set
-            {
-                if (this.UpdateValue(ref this.vacationStart1, value))
-                {
-                    this.NotifyPropertyChanged(nameof(this.VacationEnd1));
-                }
-            }
+            set { this.UpdateValue(ref this.vacationStart1, value); }
         }
 
         public DateTime VacationEnd1
         {
-            get { return this.vacationStart1 + this.AdjustVacationTimeSpan(this.vacationStart1, this.vacationSpan1); }
+            get { return this.VacationStart1 + this.AdjustVacationTimeSpan(this.VacationStart1, this.VacationSpan1); }
         }
 
         public DateTime VacationStart2
         {
             get { return this.vacationStart2; }
-            set
-            {
-                if (this.UpdateValue(ref this.vacationStart2, value))
-                {
-                    this.NotifyPropertyChanged(nameof(this.VacationEnd2));
-                }
-            }
+            set { this.UpdateValue(ref this.vacationStart2, value); }
         }
 
         public DateTime VacationEnd2
         {
-            get { return this.vacationStart1 + this.AdjustVacationTimeSpan(this.vacationStart2, this.vacationSpan2); }
+            get { return this.VacationStart2 + this.AdjustVacationTimeSpan(this.VacationStart2, this.VacationSpan2); }
         }
 
         public DateTime LeaveStart1
@@ -100,31 +88,19 @@ namespace VacationHelper
 
         public DateTime LeaveEnd1
         {
-            get { return this.leaveStart1 + this.leaveSpan1; }
+            get { return this.LeaveStart1 + this.LeaveSpan1; }
         }
 
         public TimeSpan VacationSpan1
         {
             get { return this.vacationSpan1; }
-            set
-            {
-                if (this.UpdateValue(ref this.vacationSpan1, value))
-                {
-                    this.NotifyPropertyChanged(nameof(this.VacationEnd1));
-                }
-            }
+            set { this.UpdateValue(ref this.vacationSpan1, value); }
         }
 
         public TimeSpan VacationSpan2
         {
             get { return this.vacationSpan2; }
-            set
-            {
-                if (this.UpdateValue(ref this.vacationSpan2, value))
-                {
-                    this.NotifyPropertyChanged(nameof(this.VacationEnd2));
-                }
-            }
+            set { this.UpdateValue(ref this.vacationSpan2, value); }
         }
 
         public TimeSpan LeaveSpan1
@@ -138,30 +114,42 @@ namespace VacationHelper
             get { return string.Empty; }
         }
 
-        public SolidColorBrush GetBackgroundBrush(DateTime dt)
+        public Brush GetBackgroundBrush(DateTime dt)
         {
-            bool use = false;
-            Color color = Color.FromArgb(64, 0, 0, 0);
+            List<SolidColorBrush> brushes = new List<SolidColorBrush>(8);
 
             if (dt >= this.VacationStart1 && dt < this.VacationStart1 + this.AdjustVacationTimeSpan(this.VacationStart1, this.VacationSpan1))
             {
-                use = true;
-                color.R = 128;
+                brushes.Add(this.brush1);
             }
 
             if (dt >= this.VacationStart2 && dt < this.VacationStart2 + this.AdjustVacationTimeSpan(this.VacationStart2, this.VacationSpan2))
             {
-                use = true;
-                color.G = 128;
+                brushes.Add(this.brush2);
             }
 
             if (dt >= this.LeaveStart1 && dt < this.LeaveStart1 + this.LeaveSpan1)
             {
-                use = true;
-                color.B = 128;
+                brushes.Add(this.brush3);
             }
 
-            return use ? new SolidColorBrush(color) : null;
+            if (brushes.Count == 0)
+            {
+                return null;
+            }
+            else if (brushes.Count == 1)
+            {
+                return brushes[0];
+            }
+
+            List<GradientStop> stops = new List<GradientStop>(brushes.Count);
+            for (int i = 0; i < brushes.Count; i++)
+            {
+                stops.Add(new GradientStop(brushes[i].Color, i / (double)brushes.Count));
+                stops.Add(new GradientStop(brushes[i].Color, (i + 1) / (double)brushes.Count));
+            }
+
+            return new LinearGradientBrush(new GradientStopCollection(stops));
         }
 
         private TimeSpan AdjustVacationTimeSpan(DateTime start, TimeSpan span)
@@ -197,9 +185,13 @@ namespace VacationHelper
                 oldValue = newValue;
                 this.NotifyPropertyChanged(name);
 
-                if (name != null && (name.Contains("Start") || name.Contains("Span")))
+                if (!string.IsNullOrEmpty(name) &&
+                    (name.Contains("Vacation") || name.Contains("Leave")) &&
+                    (name.Contains("Start") || name.Contains("Span")))
                 {
-                    this.NotifyPropertyChanged("AnyDate");
+                    string endName = name.Replace("Start", "End").Replace("Span", "End");
+                    this.NotifyPropertyChanged(endName);
+                    this.NotifyPropertyChanged(nameof(this.AnyDate));
                 }
 
                 return true;
