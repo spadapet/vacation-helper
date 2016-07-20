@@ -13,13 +13,16 @@ namespace VacationHelper
         private string name2;
         private DateTime vacationStart1;
         private DateTime vacationStart2;
+        private DateTime vacationStart3;
         private DateTime leaveStart1;
         private TimeSpan vacationSpan1;
         private TimeSpan vacationSpan2;
+        private TimeSpan vacationSpan3;
         private TimeSpan leaveSpan1;
         private SolidColorBrush brush1;
         private SolidColorBrush brush2;
         private SolidColorBrush brush3;
+        private SolidColorBrush brush4;
         private HashSet<DateTime> holidays;
 
         public VacationData()
@@ -28,13 +31,17 @@ namespace VacationHelper
             this.name2 = "Lila";
             this.vacationStart1 = DateTime.Parse("2016/10/10");
             this.vacationStart2 = DateTime.Parse("2016/10/10"); ;
+            this.vacationStart3 = DateTime.Parse("2016/10/10"); ;
             this.leaveStart1 = DateTime.Parse("2016/10/10"); ;
             this.vacationSpan1 = TimeSpan.FromDays(35);
             this.vacationSpan2 = TimeSpan.FromDays(20);
+            this.vacationSpan3 = TimeSpan.Zero;
             this.leaveSpan1 = TimeSpan.FromDays(8 * 7);
             this.brush1 = new SolidColorBrush(Color.FromArgb(96, 255, 0, 0));
             this.brush2 = new SolidColorBrush(Color.FromArgb(96, 0, 255, 0));
-            this.brush3 = new SolidColorBrush(Color.FromArgb(96, 0, 0, 255));
+            this.brush3 = new SolidColorBrush(Color.FromArgb(96, 255, 255, 0));
+            this.brush4 = new SolidColorBrush(Color.FromArgb(96, 0, 0, 255));
+
             this.holidays = new HashSet<DateTime>()
             {
                 new DateTime(2016, 11, 24),
@@ -80,6 +87,17 @@ namespace VacationHelper
             get { return this.VacationStart2 + this.AdjustVacationTimeSpan(this.VacationStart2, this.VacationSpan2); }
         }
 
+        public DateTime VacationStart3
+        {
+            get { return this.vacationStart3; }
+            set { this.UpdateValue(ref this.vacationStart3, value); }
+        }
+
+        public DateTime VacationEnd3
+        {
+            get { return this.VacationStart3 + this.AdjustVacationTimeSpan(this.VacationStart3, this.VacationSpan3); }
+        }
+
         public DateTime LeaveStart1
         {
             get { return this.leaveStart1; }
@@ -101,6 +119,12 @@ namespace VacationHelper
         {
             get { return this.vacationSpan2; }
             set { this.UpdateValue(ref this.vacationSpan2, value); }
+        }
+
+        public TimeSpan VacationSpan3
+        {
+            get { return this.vacationSpan3; }
+            set { this.UpdateValue(ref this.vacationSpan3, value); }
         }
 
         public TimeSpan LeaveSpan1
@@ -128,9 +152,14 @@ namespace VacationHelper
                 brushes.Add(this.brush2);
             }
 
-            if (dt >= this.LeaveStart1 && dt < this.LeaveStart1 + this.LeaveSpan1)
+            if (dt >= this.VacationStart3 && dt < this.VacationStart3 + this.AdjustVacationTimeSpan(this.VacationStart3, this.VacationSpan3))
             {
                 brushes.Add(this.brush3);
+            }
+
+            if (dt >= this.LeaveStart1 && dt < this.LeaveStart1 + this.LeaveSpan1)
+            {
+                brushes.Add(this.brush4);
             }
 
             if (brushes.Count == 0)
