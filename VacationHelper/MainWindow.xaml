@@ -8,6 +8,7 @@
         Title="Vacation Helper"
         Height="500"
         Width="1000"
+        Name="This"
         d:DataContext="{d:DesignInstance {x:Type local:VacationData}, IsDesignTimeCreatable=True}">
     <Window.Resources>
         <local:TimeSpanToDaysConverter x:Key="TimeSpanToDays" />
@@ -78,8 +79,8 @@
                                 <Rectangle.Fill>
                                     <MultiBinding Converter="{StaticResource DayToBackground}">
                                         <Binding />
-                                        <Binding Source="{x:Static local:App.MyCurrent}" Path="VacationData" />
-                                        <Binding Source="{x:Static local:App.MyCurrent}" Path="VacationData.AnyDate" />
+                                        <Binding ElementName="This" Path="DataContext" />
+                                        <Binding ElementName="This" Path="DataContext.AnyDate" />
                                     </MultiBinding>
                                 </Rectangle.Fill>
                             </Rectangle>
@@ -243,6 +244,7 @@
                 <Calendar x:Name="Calendar4" Style="{StaticResource CalendarStyle}" DisplayDate="2017-01-01" DisplayDateStart="2017-01-01" DisplayDateEnd="2017-01-31">
                     <Calendar.BlackoutDates>
                         <CalendarDateRange End="2017-01-02" Start="2017-01-02"/>
+                        <CalendarDateRange End="2017-01-16" Start="2017-01-16"/>
                     </Calendar.BlackoutDates>
                 </Calendar>
                 <Calendar x:Name="Calendar5" Style="{StaticResource CalendarStyle}" DisplayDate="2017-02-01" DisplayDateStart="2017-02-01" DisplayDateEnd="2017-02-28" />

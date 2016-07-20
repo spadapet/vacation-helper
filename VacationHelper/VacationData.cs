@@ -42,6 +42,7 @@ namespace VacationHelper
                 new DateTime(2016, 12, 23),
                 new DateTime(2016, 12, 26),
                 new DateTime(2017, 01, 02),
+                new DateTime(2017, 01, 16),
             };
         }
 
