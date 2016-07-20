@@ -60,13 +60,35 @@ namespace VacationHelper
         public DateTime VacationStart1
         {
             get { return this.vacationStart1; }
-            set { this.UpdateValue(ref this.vacationStart1, value); }
+            set
+            {
+                if (this.UpdateValue(ref this.vacationStart1, value))
+                {
+                    this.NotifyPropertyChanged(nameof(this.VacationEnd1));
+                }
+            }
+        }
+
+        public DateTime VacationEnd1
+        {
+            get { return this.vacationStart1 + this.AdjustVacationTimeSpan(this.vacationStart1, this.vacationSpan1); }
         }
 
         public DateTime VacationStart2
         {
             get { return this.vacationStart2; }
-            set { this.UpdateValue(ref this.vacationStart2, value); }
+            set
+            {
+                if (this.UpdateValue(ref this.vacationStart2, value))
+                {
+                    this.NotifyPropertyChanged(nameof(this.VacationEnd2));
+                }
+            }
+        }
+
+        public DateTime VacationEnd2
+        {
+            get { return this.vacationStart1 + this.AdjustVacationTimeSpan(this.vacationStart2, this.vacationSpan2); }
         }
 
         public DateTime LeaveStart1
@@ -75,16 +97,33 @@ namespace VacationHelper
             set { this.UpdateValue(ref this.leaveStart1, value); }
         }
 
+        public DateTime LeaveEnd1
+        {
+            get { return this.leaveStart1 + this.leaveSpan1; }
+        }
+
         public TimeSpan VacationSpan1
         {
             get { return this.vacationSpan1; }
-            set { this.UpdateValue(ref this.vacationSpan1, value); }
+            set
+            {
+                if (this.UpdateValue(ref this.vacationSpan1, value))
+                {
+                    this.NotifyPropertyChanged(nameof(this.VacationEnd1));
+                }
+            }
         }
 
         public TimeSpan VacationSpan2
         {
             get { return this.vacationSpan2; }
-            set { this.UpdateValue(ref this.vacationSpan2, value); }
+            set
+            {
+                if (this.UpdateValue(ref this.vacationSpan2, value))
+                {
+                    this.NotifyPropertyChanged(nameof(this.VacationEnd2));
+                }
+            }
         }
 
         public TimeSpan LeaveSpan1
