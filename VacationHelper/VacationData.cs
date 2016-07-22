@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
+using Newtonsoft.Json;
 
 namespace VacationHelper
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class VacationData : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -53,18 +56,69 @@ namespace VacationHelper
             };
         }
 
+        public static VacationData Load()
+        {
+            try
+            {
+                using (FileStream stream = File.OpenRead(VacationData.SaveFileName))
+                using (StreamReader streamReader = new StreamReader(stream))
+                using (JsonTextReader reader = new JsonTextReader(streamReader))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    VacationData data = serializer.Deserialize<VacationData>(reader);
+
+                    if (data != null)
+                    {
+                        return data;
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            return new VacationData();
+        }
+
+        public void Save()
+        {
+            try
+            {
+                using (FileStream stream = File.OpenWrite(VacationData.SaveFileName))
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.Serialize(writer, this);
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private static string SaveFileName
+        {
+            get
+            {
+                return Environment.ExpandEnvironmentVariables(@"%appdata%\VacationData.json");
+            }
+        }
+
+        [JsonProperty]
         public string Name1
         {
             get { return this.name1; }
             set { this.UpdateValue(ref this.name1, value); }
         }
 
+        [JsonProperty]
         public string Name2
         {
             get { return this.name2; }
             set { this.UpdateValue(ref this.name2, value); }
         }
 
+        [JsonProperty]
         public DateTime VacationStart1
         {
             get { return this.vacationStart1; }
@@ -76,6 +130,7 @@ namespace VacationHelper
             get { return this.VacationStart1 + this.AdjustVacationTimeSpan(this.VacationStart1, this.VacationSpan1); }
         }
 
+        [JsonProperty]
         public DateTime VacationStart2
         {
             get { return this.vacationStart2; }
@@ -87,6 +142,7 @@ namespace VacationHelper
             get { return this.VacationStart2 + this.AdjustVacationTimeSpan(this.VacationStart2, this.VacationSpan2); }
         }
 
+        [JsonProperty]
         public DateTime VacationStart3
         {
             get { return this.vacationStart3; }
@@ -98,6 +154,7 @@ namespace VacationHelper
             get { return this.VacationStart3 + this.AdjustVacationTimeSpan(this.VacationStart3, this.VacationSpan3); }
         }
 
+        [JsonProperty]
         public DateTime LeaveStart1
         {
             get { return this.leaveStart1; }
@@ -109,24 +166,28 @@ namespace VacationHelper
             get { return this.LeaveStart1 + this.LeaveSpan1; }
         }
 
+        [JsonProperty]
         public TimeSpan VacationSpan1
         {
             get { return this.vacationSpan1; }
             set { this.UpdateValue(ref this.vacationSpan1, value); }
         }
 
+        [JsonProperty]
         public TimeSpan VacationSpan2
         {
             get { return this.vacationSpan2; }
             set { this.UpdateValue(ref this.vacationSpan2, value); }
         }
 
+        [JsonProperty]
         public TimeSpan VacationSpan3
         {
             get { return this.vacationSpan3; }
             set { this.UpdateValue(ref this.vacationSpan3, value); }
         }
 
+        [JsonProperty]
         public TimeSpan LeaveSpan1
         {
             get { return this.leaveSpan1; }
